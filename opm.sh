@@ -45,7 +45,7 @@ opm_err()
 
 usage()
 {
-	opm_err "usage: ${0##*/} [-cdm] [-C clipboard] [-p file] [-s file] command"
+	opm_err "usage: ${0##*/} [-cdm] [-C clipboard] [-p file] [-s file] [-P file] [-S file] command"
 }
 
 find_sig()
@@ -175,11 +175,13 @@ show_entry()
 
 trap 'trap_handler' EXIT HUP INT TERM
 
-while getopts C:cdmp:s: arg; do
+while getopts C:S:P:cdmp:s: arg; do
 	case ${arg} in
 		C) _CBOARD="${OPTARG}" ;;
 		c) _CLIP=1 ;;
+		S) _SPRIVATE_KEY="${OPTARG}" ;;
 		s) _PRIVATE_KEY="${OPTARG}" ;;
+		P) _SPUBLIC_KEY="${OPTARG}" ;;
 		p) _PUBLIC_KEY="${OPTARG}" ;;
 		d) _DEBUG=1 ;;
 		m) _MULTILINE=1 ;;
