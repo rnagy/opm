@@ -25,6 +25,7 @@ _DEBUG=0
 _MULTILINE=0
 
 [ -d ${OPM_STORE} ] || mkdir -p ${OPM_STORE}
+[ -d ${OPM_KEYSTORE} ] || mkdir -p ${OPM_KEYSTORE}
 
 _TMP=$(mktemp -p ${OPM_STORE} .XXXXXXXXXX)
 
@@ -174,6 +175,18 @@ show_entry()
 	fi
 }
 
+check_add_keys()
+{
+	[ -f ${_PUBLIC_KEY} ] || opm_err "missing ${_PUBLIC_KEY}"
+	[ -f ${_SPRIVATE_KEY} ] || opm_err "missing ${_SPRIVATE_KEY}"
+}
+
+check_get_keys()
+{
+	[ -f ${_PRIVATE_KEY} ] || opm_err "missing ${_PRIVATE_KEY}"
+	[ -f ${_SPUBLIC_KEY} ] || opm_err "missing ${_SPUBLIC_KEY}"
+}
+
 trap 'trap_handler' EXIT HUP INT TERM
 
 while getopts C:S:P:cdmp:s: arg; do
@@ -203,6 +216,7 @@ opm_debug "Signify public key: ${_SPUBLIC_KEY}"
 
 case ${1} in
 add|insert)
+	check_add_keys
 	add_entry ${2}
 	;;
 del|rm)
@@ -212,12 +226,15 @@ list|ls)
 	show_list
 	;;
 encrypt)
+	check_add_keys
 	encrypt ${2}
 	;;
 show|get)
+	check_get_keys
 	show_entry ${2}
 	;;
 verify)
+	check_get_keys
 	verify
 	;;
 *)
