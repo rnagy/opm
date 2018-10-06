@@ -90,6 +90,9 @@ private key used for creating a signature.
 public key used for verifying a signature.
 .It Pa ~/.opm/store/*
 Encrypted password store.
+.It Pa ~/.opm/store/*/*/.team
+Any .team directory in a path is used to store public certificates. Any certificate in these
+directories will be used while encrypting an entry, providing basic team support.
 .El
 .Sh EXAMPLES
 Create a password protected private key and certificate for the desired users:
