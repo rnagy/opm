@@ -152,7 +152,7 @@ add_entry()
 path_check()
 {
 	local _path=$1
-	local _abs=$(readlink -f "${OPM_STORE}/${_path}" >/dev/null)
+	local _abs=$(readlink -f "${OPM_STORE}/${_path}" 2>/dev/null)
 	[[ "$_abs" == "${OPM_STORE}"* ]] || opm_err "invalid path"
 }
 
