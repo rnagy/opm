@@ -149,6 +149,13 @@ add_entry()
 	do_encrypt ${_path}
 }
 
+path_check()
+{
+	local _path=$1
+	local _abs=$(readlink -f "${OPM_STORE}/${_path}")
+	[[ "$_abs" == "${OPM_STORE}"* ]] || opm_err "invalid path"
+}
+
 del_entry()
 {
 	local _path=$1
@@ -217,9 +224,11 @@ opm_debug "Signify public key: ${_SPUBLIC_KEY}"
 case ${1} in
 add|insert)
 	check_add_keys
+	path_check ${2}
 	add_entry ${2}
 	;;
 del|rm)
+	path_check ${2}
 	del_entry ${2}
 	;;
 list|ls)
@@ -227,10 +236,12 @@ list|ls)
 	;;
 encrypt)
 	check_add_keys
+	path_check ${2}
 	encrypt ${2}
 	;;
 show|get)
 	check_get_keys
+	path_check ${2}
 	show_entry ${2}
 	;;
 verify)
