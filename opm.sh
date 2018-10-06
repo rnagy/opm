@@ -120,7 +120,7 @@ do_encrypt()
 	openssl smime -encrypt -aes256 -in ${_encrypt:=${_TMP}} -out ${OPM_STORE}/${_path} \
 		-outform PEM ${_recipients}
 	echo "Signing ${OPM_STORE}/${_path} with ${_SPRIVATE_KEY}"
-	signify -S -s ${_SPRIVATE_KEY} -m ${OPM_STORE}/${_path}
+	signify -S -s ${_SPRIVATE_KEY} -m ${OPM_STORE}/${_path} || rm -f ${OPM_STORE}/${_path}
 }
 
 add_entry()
