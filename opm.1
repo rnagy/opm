@@ -37,16 +37,85 @@ is a simple password manager utilizing
 and
 .Xr signify 1 .
 .Pp
-.Sh FILES
-.Bl -tag -width "/etc/installurl" -compact
-.It Pa /etc/installurl
-.Ox
-mirror top-level URL for fetching patches.
-.It Pa /var/syspatch/*
-Directories containing the rollback tarball and original signed
-.Xr diff 1
-of installed patches.
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl c
+Copy the password to the clipboard for one time paste only.
+.It Fl d
+Turn on debug messages.
+.It Fl m
+The content is multi-line. This option forces the use of the $EDITOR for adding
+entries.
+.It Fl C Ar clipboard
+Specifies which clipboard to use. Defaults to
+.Pa primary .
+.It Fl S Ar file
+Path to the signify private key.
+.It Fl P Ar file
+Path to the signify public key.
+.It Fl s Ar file
+Path to the user's private key.
+.It Fl p Ar file
+Path to the user's public certificate.
 .El
+.Pp
+The following commands are available:
+.Bl -tag -width Ds
+.It Cm add | insert Ar group/entry
+Add a new entry to the specified path.
+.It Cm del | rm Ar group/entry
+Remove the specified entry.
+.It Cm list | ls
+Show the list of existing entries.
+.It encrypt Ar group/entry 
+Re-encrypt the specified path. If not path is specified, all entries will be re-encrypted.
+.It Cm show | get Ar group/entry
+Show the contents of an entry after decryption.
+.It Cm verify
+Verify the integrity of the files using
+.Xr signify 1 .
+.El
+.Pp
+.Sh FILES
+.Bl -tag -width "~/.opm/private/signify.sec" -compact
+.It Pa ~/.opm/private/alice.key
+Private key for the user used for decryption.
+.It Pa ~/.opm/private/alice.pub
+Public key for the user used for encryption.
+.It Pa ~/.opm/private/signify.sec
+.Xr signify 1
+private key used for creating a signature.
+.It Pa ~/.opm/private/signify.pub
+.Xr signify 1
+public key used for verifying a signature.
+.It Pa ~/.opm/store/*
+Encrypted password store.
+.El
+.Sh EXAMPLES
+Create a password protected private key and certificate for the desired users:
+.Bd -literal -offset indent
+$ openssl req -x509 -newkey rsa:4096 -days 365 \e
+	-subj "/C=HU/ST=*/L=*/O=*/OU=*/CN=Alice/" \e
+	-keyout alice.key -out alice.pub
+.Ed
+.Pp
+Optionally one can use an already existing ssh private key to generate a public
+certificate:
+.Bd -literal -offset indent
+$ openssl req -x509 -new -key ~/.ssh/id_rsa -days 365 \e
+	-subj "/C=HU/ST=*/L=*/O=*/OU=*/CN=Alice/" \e
+	-out alice.pub
+.Ed
+.Pp
+Create a new key pair for signify:
+.Bd -literal -offset indent
+$ signify -G -p signify.pub -s signify.sec
+.Ed
+.Pp
+.Nm
+will look for these files depending on if you are doing encryption or decryption.
+Please refer to the FILES section for placement of these files.
+.Ed
 .Sh SEE ALSO
 .Xr openssl 1 ,
 .Xr signify 1 ,
