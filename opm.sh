@@ -152,7 +152,7 @@ add_entry()
 path_check()
 {
 	local _path=$1
-	local _abs=$(readlink -f "${OPM_STORE}/${_path}")
+	local _abs=$(readlink -f "${OPM_STORE}/${_path}" >/dev/null)
 	[[ "$_abs" == "${OPM_STORE}"* ]] || opm_err "invalid path"
 }
 
@@ -224,7 +224,6 @@ opm_debug "Signify public key: ${_SPUBLIC_KEY}"
 case ${1} in
 add|insert)
 	check_add_keys
-	path_check ${2}
 	add_entry ${2}
 	;;
 del|rm)
