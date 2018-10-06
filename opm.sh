@@ -17,7 +17,8 @@
 set -e
 umask 077
 
-OPM_STORE=${OPM_STORE:-${HOME}/.opm}
+OPM_STORE=${OPM_STORE:-${HOME}/.opm/store}
+OPM_KEYSTORE=${OPM_KEYSTORE:-${HOME}/.opm/private}
 _CBOARD=primary
 _CLIP=0
 _DEBUG=0
@@ -190,10 +191,10 @@ while getopts C:S:P:cdmp:s: arg; do
 done
 shift $((OPTIND - 1))
 
-_PRIVATE_KEY=${_PRIVATE_KEY:-${OPM_STORE}/${USER}.key}
-_PUBLIC_KEY=${_PUBLIC_KEY:-${OPM_STORE}/${USER}.pub}
-_SPRIVATE_KEY=${_SPRIVATE_KEY:-${OPM_STORE}/opm_signify.sec}
-_SPUBLIC_KEY=${_SPUBLIC_KEY:-${OPM_STORE}/opm_signify.pub}
+_PRIVATE_KEY=${_PRIVATE_KEY:-${OPM_KEYSTORE}/${USER}.key}
+_PUBLIC_KEY=${_PUBLIC_KEY:-${OPM_KEYSTORE}/${USER}.pub}
+_SPRIVATE_KEY=${_SPRIVATE_KEY:-${OPM_KEYSTORE}/signify.sec}
+_SPUBLIC_KEY=${_SPUBLIC_KEY:-${OPM_KEYSTORE}/signify.pub}
 
 opm_debug "Private key: ${_PRIVATE_KEY}"
 opm_debug "Public key: ${_PUBLIC_KEY}"
