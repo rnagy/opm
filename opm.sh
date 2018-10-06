@@ -160,7 +160,7 @@ del_entry()
 {
 	local _path=$1
 	[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry" 
-	rm -i ${OPM_STORE}/${_path}
+	rm -i ${OPM_STORE}/${_path} ${OPM_STORE}/${_path}.sig
 }
 
 show_entry()
