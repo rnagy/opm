@@ -49,37 +49,43 @@ usage()
 	opm_err "usage: ${0##*/} [-cdm] [-C clipboard] [-p file] [-s file] [-P file] [-S file] command"
 }
 
+strip_name()
+{
+	while read _path; do
+		_path=${_path%%.sig}
+		_path=${_path##${OPM_STORE}}
+		_path=${_path##${OPM_STORE}/}
+		print "${_path}"
+	done
+}
+
 find_sig()
 {
-	find ${OPM_STORE} -name '*.sig' -print 2>/dev/null
+	find ${OPM_STORE} -name '*.sig' -print 2>/dev/null | strip_name
 }
 
 search()
 {
 	local _path=$1
-	find_sig | grep -Gie "${_path}" | sed "s,${OPM_STORE}/,,g;s,\.sig$,,g"
+	find_sig | grep -Gie "${_path}"
 }
 
 verify()
 {
-	local _e _f
+	local _e
 	for _e in $(find_sig); do
-		_e=${_e%%.sig}
-		_f=$(echo ${_e} | sed "s,${OPM_STORE}/,,g")
-		opm_debug "Verifying ${_f} with ${_SPUBLIC_KEY}"
-		signify -Vq -p ${_SPUBLIC_KEY} -m ${_e} || opm_err "unable to verify ${_f}"
+		opm_debug "Verifying ${_e} with ${_SPUBLIC_KEY}"
+		signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_e} || opm_err "unable to verify ${_e}"
 	done
 }
 
 encrypt()
 {
 	local _path=$1
-	local _e _f
+	local _e
 	if [ -z ${_path} ]; then
 		for _e in $(find_sig); do
-			_e=${_e%%.sig}
-			_f=$(echo ${_e} | sed "s,${OPM_STORE}/,,g")
-			encrypt ${_f} ${OPM_STORE}/${_f}
+			encrypt ${_e} ${OPM_STORE}/${_e}
 		done
 	else
 		[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry" 
