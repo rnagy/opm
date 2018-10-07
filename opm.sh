@@ -21,7 +21,6 @@ OPM_STORE=${OPM_STORE:-${HOME}/.opm/store}
 OPM_KEYSTORE=${OPM_KEYSTORE:-${HOME}/.opm/private}
 _CBOARD=primary
 _CLIP=0
-_DEBUG=0
 _MULTILINE=0
 
 [ -d ${OPM_STORE} ] || mkdir -p ${OPM_STORE}
@@ -37,7 +36,7 @@ trap_handler()
 
 opm_debug()
 {
-	[ ${_DEBUG} -gt 0 ] && echo "===> ${1}" || true
+	[ -z ${_DEBUG} ] || echo "===> ${1}" || true
 }
 
 opm_err()
