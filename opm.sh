@@ -78,7 +78,7 @@ encrypt()
 		done
 	else
 		[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry" 
-		do_encrypt ${_path} ${OPM_STORE}/${_path}
+		show_entry ${_path} > ${_TMP} && do_encrypt ${_path}
 	fi
 }
 
@@ -107,7 +107,6 @@ show_list()
 do_encrypt()
 {
 	local _path=$1
-	local _encrypt=$2
 	local _parent="${_path%/*}"
 	local _recipients=${_PUBLIC_KEY}
 	[ -d ${OPM_STORE}/${_parent}/.team ] && \
@@ -117,7 +116,7 @@ do_encrypt()
 		_cn=$(openssl x509 -noout -subject -in ${_k} | sed -n '/^subject/s/^.*CN=//p')
 		opm_debug "Encrypting ${OPM_STORE}/${_path} for ${_cn}"
 	done
-	openssl smime -encrypt -aes256 -in ${_encrypt:=${_TMP}} -out ${OPM_STORE}/${_path} \
+	openssl smime -encrypt -aes256 -in ${_TMP} -out ${OPM_STORE}/${_path} \
 		-outform PEM ${_recipients}
 	echo "Signing ${OPM_STORE}/${_path} with ${_SPRIVATE_KEY}"
 	signify -S -s ${_SPRIVATE_KEY} -m ${OPM_STORE}/${_path} || rm -f ${OPM_STORE}/${_path}
@@ -170,7 +169,7 @@ show_entry()
 	local _parent="${_path%/*}"
 	[ -z ${_path} ] && opm_err "Empty path" 
 	[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry" 
-	signify -V -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_path} && \
+	signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_path} && \
 	_e=$(openssl smime -decrypt -in ${OPM_STORE}/${_path} -inform PEM \
 		-inkey ${_PRIVATE_KEY})
 	if [ ${_CLIP} -eq 0 ]; then
