@@ -54,6 +54,12 @@ find_sig()
 	find ${OPM_STORE} -name '*.sig' -print 2>/dev/null
 }
 
+search()
+{
+	local _path=$1
+	find_sig | grep -Gie "${_path}" | sed "s,${OPM_STORE}/,,g;s,\.sig$,,g"
+}
+
 verify()
 {
 	local _e _f
@@ -246,6 +252,9 @@ show|get)
 verify)
 	check_get_keys
 	verify
+	;;
+find|search)
+	search ${2}
 	;;
 *)
 	usage
