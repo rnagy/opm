@@ -95,26 +95,6 @@ Encrypted password store.
 .It Pa ~/.opm/store/*/*/.team
 Any .team directory in a path is used to store public certificates. Any certificate in these
 directories will be used while encrypting an entry, providing basic team support.
-.Xr signify 1 .
-.El
-.Pp
-.Sh FILES
-.Bl -tag -width "~/.opm/private/signify.sec" -compact
-.It Pa ~/.opm/private/alice.key
-Private key for the user used for decryption.
-.It Pa ~/.opm/private/alice.pub
-Public key for the user used for encryption.
-.It Pa ~/.opm/private/signify.sec
-.Xr signify 1
-private key used for creating a signature.
-.It Pa ~/.opm/private/signify.pub
-.Xr signify 1
-public key used for verifying a signature.
-.It Pa ~/.opm/store/*
-Encrypted password store.
-.It Pa ~/.opm/store/*/*/.team
-Any .team directory in a path is used to store public certificates. Any certificate in these
-directories will be used while encrypting an entry, providing basic team support.
 .El
 .Sh EXAMPLES
 Create a password protected private key and certificate for the desired users:
