@@ -96,8 +96,8 @@ encrypt()
 tree()
 {
 	[ -z ${_BATCH} ] && \
-		awk '!/\.$/ {for (i=1;i<NF-1;i++){printf("|   ")}print "|-- "$NF}'  FS='/' && \
-		return
+		awk '!/\.$/ {for (i=1;i<NF-1;i++){printf("|   ")}print "|-- "$NF}' FS='/' && \
+			return
 	while read _e; do
 		_e=${_e##./}
 		[ -f ${OPM_STORE}/${_e} ] && print "${_e}"
