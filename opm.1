@@ -22,7 +22,7 @@
 .Nd whatever password manager 
 .Sh SYNOPSIS
 .Nm opm 
-.Op Fl cdm
+.Op Fl bcdm
 .Op Fl C clipboard
 .Op Fl S file
 .Op Fl P file
@@ -39,6 +39,8 @@ and
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
+.It Fl b
+Enable batch mode for listing the entries, avoiding the tree output.
 .It Fl c
 Copy the password to the clipboard for one time paste only.
 .It Fl d

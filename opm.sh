@@ -95,7 +95,13 @@ encrypt()
 
 tree()
 {
-	awk '!/\.$/ {for (i=1;i<NF-1;i++){printf("|   ")}print "|-- "$NF}'  FS='/'
+	[ -z ${_BATCH} ] && \
+		awk '!/\.$/ {for (i=1;i<NF-1;i++){printf("|   ")}print "|-- "$NF}'  FS='/' && \
+		return
+	while read _e; do
+		_e=${_e##./}
+		[ -f ${OPM_STORE}/${_e} ] && print "${_e}"
+	done
 }
 
 show_list()
@@ -208,7 +214,7 @@ check_get_keys()
 
 trap 'trap_handler' EXIT HUP INT TERM
 
-while getopts C:S:P:cdmp:s: arg; do
+while getopts C:S:P:bcdmp:s: arg; do
 	case ${arg} in
 		C) _CBOARD="${OPTARG}" ;;
 		c) _CLIP=1 ;;
@@ -218,6 +224,7 @@ while getopts C:S:P:cdmp:s: arg; do
 		p) _PUBLIC_KEY="${OPTARG}" ;;
 		d) _DEBUG=1 ;;
 		m) _MULTILINE=1 ;;
+		b) _BATCH=1 ;;
 		*) usage ;;
 	esac
 done
