@@ -192,7 +192,8 @@ show_entry()
 	_e=$(openssl smime -decrypt -in ${OPM_STORE}/${_path} -inform PEM \
 		-inkey ${_PRIVATE_KEY})
 	if [ ${_CLIP} -eq 0 ]; then
-		echo "${_e}"
+		[ -z ${_HIGHLIGHT} ] || tput smso && echo "${_e}" && \
+			tput rmso || echo "${_e}"
 	else
 		opm_debug "Copying to clipboard=${_CBOARD}, multiline=${_MULTILINE}"
 		[ ${_MULTILINE} -eq 0 ] && _e=$(echo "${_e}" | head -1)
@@ -214,7 +215,7 @@ check_get_keys()
 
 trap 'trap_handler' EXIT HUP INT TERM
 
-while getopts C:S:P:bcdmp:s: arg; do
+while getopts C:S:P:bcdhmp:s: arg; do
 	case ${arg} in
 		C) _CBOARD="${OPTARG}" ;;
 		c) _CLIP=1 ;;
@@ -225,6 +226,7 @@ while getopts C:S:P:bcdmp:s: arg; do
 		d) _DEBUG=1 ;;
 		m) _MULTILINE=1 ;;
 		b) _BATCH=1 ;;
+		h) _HIGHLIGHT=1 ;;
 		*) usage ;;
 	esac
 done
