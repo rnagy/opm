@@ -21,7 +21,7 @@ OPM_STORE=${OPM_STORE:-${HOME}/.opm/store}
 OPM_KEYSTORE=${OPM_KEYSTORE:-${HOME}/.opm/private}
 _CBOARD=primary
 _CLIP=0
-_MULTILINE=0
+_ML=0
 
 [ -d ${OPM_STORE} ] || mkdir -p ${OPM_STORE}
 [ -d ${OPM_KEYSTORE} ] || mkdir -p ${OPM_KEYSTORE}
@@ -46,7 +46,11 @@ opm_err()
 
 usage()
 {
-	opm_err "usage: ${0##*/} [-cdm] [-C clipboard] [-p file] [-s file] [-P file] [-S file] command"
+	cat << USAGE
+usage: ${0##*/}	[-bcdhm] [-C clipboard] [-p file] [-s file] [-P file]
+		[-S file] command
+USAGE
+	exit 1
 }
 
 strip_name()
@@ -75,7 +79,8 @@ verify()
 	local _e
 	for _e in $(find_sig); do
 		opm_debug "Verifying ${_e} with ${_SPUBLIC_KEY}"
-		signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_e} || opm_err "unable to verify ${_e}"
+		signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_e} || \
+			opm_err "unable to verify ${_e}"
 	done
 }
 
@@ -96,8 +101,9 @@ encrypt()
 tree()
 {
 	[ -z ${_BATCH} ] && \
-		awk '!/\.$/ {for (i=1;i<NF-1;i++){printf("|   ")}print "|-- "$NF}' FS='/' && \
-			return
+		awk '!/\.$/ {for (i=1;i<NF-1;i++){printf("|   ")} \
+			print "|-- "$NF}' FS='/' && \
+				return
 	while read _e; do
 		_e=${_e##./}
 		[ -f ${OPM_STORE}/${_e} ] && print "${_e}"
@@ -127,16 +133,19 @@ do_encrypt()
 	local _parent="${_path%/*}"
 	local _recipients=${_PUBLIC_KEY}
 	[ -d ${OPM_STORE}/${_parent}/.team ] && \
-		_recipients="${_PUBLIC_KEY} $(ls ${OPM_STORE}/${_parent}/.team/*.pub)"
+		_recipients="${_PUBLIC_KEY} \
+			$(ls ${OPM_STORE}/${_parent}/.team/*.pub)"
 
 	for _k in ${_recipients}; do
-		_cn=$(openssl x509 -noout -subject -in ${_k} | sed -n '/^subject/s/^.*CN=//p')
+		_cn=$(openssl x509 -noout -subject -in ${_k} | \
+			sed -n '/^subject/s/^.*CN=//p')
 		opm_debug "Encrypting ${OPM_STORE}/${_path} for ${_cn}"
 	done
 	openssl smime -encrypt -aes256 -in ${_TMP} -out ${OPM_STORE}/${_path} \
 		-outform PEM ${_recipients}
 	echo "Signing ${OPM_STORE}/${_path} with ${_SPRIVATE_KEY}"
-	signify -S -s ${_SPRIVATE_KEY} -m ${OPM_STORE}/${_path} || rm -f ${OPM_STORE}/${_path}
+	signify -S -s ${_SPRIVATE_KEY} -m ${OPM_STORE}/${_path} || \
+		rm -f ${OPM_STORE}/${_path}
 }
 
 add_entry()
@@ -146,7 +155,7 @@ add_entry()
 	[ -z ${_path} ] && opm_err "Empty path" 
 	[ -d "${OPM_STORE}/${_parent}" ] || mkdir -p "${OPM_STORE}/${_parent}"
 
-	if [ ${_MULTILINE} -gt 0 ]; then
+	if [ ${_ML} -gt 0 ]; then
 		${EDITOR:-vi} ${_TMP}
 	else
 		if [ -t 0 ]; then
@@ -195,8 +204,8 @@ show_entry()
 		[ -z ${_HIGHLIGHT} ] || tput smso && echo "${_e}" && \
 			tput rmso || echo "${_e}"
 	else
-		opm_debug "Copying to clipboard=${_CBOARD}, multiline=${_MULTILINE}"
-		[ ${_MULTILINE} -eq 0 ] && _e=$(echo "${_e}" | head -1)
+		opm_debug "Copying to clipboard=${_CBOARD}, multiline=${_ML}"
+		[ ${_ML} -eq 0 ] && _e=$(echo "${_e}" | head -1)
 		printf '%s' "${_e}" | xclip -selection ${_CBOARD} -loop 1
 	fi
 }
@@ -224,7 +233,7 @@ while getopts C:S:P:bcdhmp:s: arg; do
 		P) _SPUBLIC_KEY="${OPTARG}" ;;
 		p) _PUBLIC_KEY="${OPTARG}" ;;
 		d) _DEBUG=1 ;;
-		m) _MULTILINE=1 ;;
+		m) _ML=1 ;;
 		b) _BATCH=1 ;;
 		h) _HIGHLIGHT=1 ;;
 		*) usage ;;
