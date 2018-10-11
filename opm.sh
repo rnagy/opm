@@ -53,8 +53,8 @@ strip_name()
 {
 	while read _path; do
 		_path=${_path%%.sig}
-		_path=${_path##${OPM_STORE}}
 		_path=${_path##${OPM_STORE}/}
+		_path=${_path##${OPM_STORE}}
 		print "${_path}"
 	done
 }
