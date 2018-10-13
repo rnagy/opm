@@ -26,8 +26,6 @@ _ML=0
 [ -d ${OPM_STORE} ] || mkdir -p ${OPM_STORE}
 [ -d ${OPM_KEYSTORE} ] || mkdir -p ${OPM_KEYSTORE}
 
-_TMP=$(mktemp -p ${OPM_STORE} .XXXXXXXXXX)
-
 trap_handler()
 {
 	set +e # we're trapped
@@ -51,6 +49,11 @@ usage: ${0##*/}	[-bcdhm] [-C clipboard] [-p file] [-s file] [-P file]
 		[-S file] command
 USAGE
 	exit 1
+}
+
+make_temp()
+{
+	_TMP=$(mktemp -p ${OPM_STORE} .XXXXXXXXXX)
 }
 
 strip_name()
@@ -254,6 +257,7 @@ opm_debug "Signify public key: ${_SPUBLIC_KEY}"
 case ${1} in
 add|insert)
 	check_add_keys
+	make_temp
 	add_entry ${2}
 	;;
 del|rm)
@@ -266,6 +270,7 @@ list|ls)
 encrypt)
 	check_add_keys
 	path_check ${2}
+	make_temp
 	encrypt ${2}
 	;;
 show|get)
