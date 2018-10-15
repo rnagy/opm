@@ -124,6 +124,12 @@ $ signify -G -p signify.pub -s signify.sec
 .Nm
 will look for these files depending on if you are doing encryption or decryption.
 Please refer to the FILES section for placement of these files.
+.Pp
+If you would like to have basic
+.Xr ksh 1
+completion for entries, you can add this to your .profile:
+.Bd -literal -offset indent
+set -A complete_opm_2 -- $(opm -b list | xargs)
 .Ed
 .Sh SEE ALSO
 .Xr openssl 1 ,
