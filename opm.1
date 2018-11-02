@@ -19,9 +19,9 @@
 .Os
 .Sh NAME
 .Nm opm
-.Nd whatever password manager 
+.Nd whatever password manager
 .Sh SYNOPSIS
-.Nm opm 
+.Nm opm
 .Op Fl bcdhm
 .Op Fl C clipboard
 .Op Fl S file
@@ -48,10 +48,12 @@ Turn on debug messages.
 .It Fl h
 Highlight the output on the console.
 .It Fl m
-The content is multi-line. This option forces the use of the $EDITOR for adding
+The content is multi-line.
+This option forces the use of the $EDITOR for adding
 entries.
 .It Fl C Ar clipboard
-Specifies which clipboard to use. Defaults to
+Specifies which clipboard to use.
+Defaults to
 .Pa primary .
 .It Fl S Ar file
 Path to the signify private key.
@@ -71,8 +73,9 @@ Add a new entry to the specified path.
 Remove the specified entry.
 .It Cm list | ls
 Show the list of existing entries.
-.It encrypt Ar group/entry 
-Re-encrypt the specified path. If not path is specified, all entries will be re-encrypted.
+.It Cm encrypt Ar group/entry
+Re-encrypt the specified path.
+If not path is specified, all entries will be re-encrypted.
 .It Cm show | get Ar group/entry
 Show the contents of an entry after decryption.
 .It Cm verify
@@ -81,7 +84,6 @@ Verify the integrity of the files using
 .It Cm search Ar string
 Search for the specified string in entry names.
 .El
-.Pp
 .Sh FILES
 .Bl -tag -width "~/.opm/private/signify.sec" -compact
 .It Pa ~/.opm/private/alice.key
@@ -97,8 +99,8 @@ public key used for verifying a signature.
 .It Pa ~/.opm/store/*
 Encrypted password store.
 .It Pa ~/.opm/store/*/*/.team
-Any .team directory in a path is used to store public certificates. Any certificate in these
-directories will be used while encrypting an entry, providing basic team support.
+Any .team directory in a path is used to store public certificates.
+Any certificate in these directories will be used while encrypting an entry, providing basic team support.
 .El
 .Sh EXAMPLES
 Create a password protected private key and certificate for the desired users:
