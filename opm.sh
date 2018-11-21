@@ -156,6 +156,8 @@ add_entry()
 	local _path=$1
 	local _parent="${_path%/*}"
 	[ -z ${_path} ] && opm_err "Empty path" 
+	[[ ${_parent} == ${_path} ]] && opm_err "Empty group"
+	[[ ${_parent} == ${_path%/} ]] && opm_err "Empty file"
 	[ -d "${OPM_STORE}/${_parent}" ] || mkdir -p "${OPM_STORE}/${_parent}"
 
 	if [ ${_ML} -gt 0 ]; then
