@@ -96,7 +96,7 @@ encrypt()
 			encrypt ${_e} ${OPM_STORE}/${_e}
 		done
 	else
-		[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry" 
+		[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry"
 		show_entry ${_path} > ${_TMP} && do_encrypt ${_path}
 	fi
 }
@@ -155,7 +155,7 @@ add_entry()
 {
 	local _path=$1
 	local _parent="${_path%/*}"
-	[ -z ${_path} ] && opm_err "Empty path" 
+	[ -z ${_path} ] && opm_err "Empty path"
 	[[ ${_parent} == ${_path} ]] && opm_err "Empty group"
 	[[ ${_parent} == ${_path%/} ]] && opm_err "Empty file"
 	[ -d "${OPM_STORE}/${_parent}" ] || mkdir -p "${OPM_STORE}/${_parent}"
@@ -189,7 +189,7 @@ path_check()
 del_entry()
 {
 	local _path=$1
-	[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry" 
+	[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry"
 	rm -i ${OPM_STORE}/${_path}
 	[ -e ${OPM_STORE}/${_path} ] || \
 		echo rm -f ${OPM_STORE}/${_path}.sig
@@ -200,8 +200,8 @@ show_entry()
 	local _e
 	local _path=$1
 	local _parent="${_path%/*}"
-	[ -z ${_path} ] && opm_err "Empty path" 
-	[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry" 
+	[ -z ${_path} ] && opm_err "Empty path"
+	[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry"
 	signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_path} && \
 	_e=$(openssl smime -decrypt -in ${OPM_STORE}/${_path} -inform PEM \
 		-inkey ${_PRIVATE_KEY})
