@@ -22,6 +22,7 @@ OPM_KEYSTORE=${OPM_KEYSTORE:-${HOME}/.opm/private}
 _CBOARD=primary
 _CLIP=0
 _ML=0
+_KEYRING=0
 
 [ -d ${OPM_STORE} ] || mkdir -p ${OPM_STORE}
 [ -d ${OPM_KEYSTORE} ] || mkdir -p ${OPM_KEYSTORE}
@@ -45,7 +46,7 @@ opm_err()
 usage()
 {
 	cat << USAGE
-usage: ${0##*/}	[-bcdhm] [-C clipboard] [-p file] [-s file] [-P file]
+usage: ${0##*/}	[-bcdhkm] [-C clipboard] [-p file] [-s file] [-P file]
 		[-S file] command
 USAGE
 	exit 1
@@ -202,9 +203,20 @@ show_entry()
 	local _parent="${_path%/*}"
 	[ -z ${_path} ] && opm_err "Empty path"
 	[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry"
+	if [ ${_KEYRING} -gt 0 ]; then
+		_pw=$(secret-tool lookup opm store || true)
+		[ -z ${_pw} ] && echo "Enter password to store in the keychain" && \
+			secret-tool store --label="OPM store" opm store && \
+			_pw=$(secret-tool lookup opm store || true)
+		if [ -z ${_pw} ]; then
+			unset _KEYRING
+		else
+			make_temp && echo ${_pw} > ${_TMP}
+		fi
+	fi
 	signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_path} && \
 	_e=$(openssl smime -decrypt -in ${OPM_STORE}/${_path} -inform PEM \
-		-inkey ${_PRIVATE_KEY})
+		-inkey ${_PRIVATE_KEY} ${_pw:+-passin file:${_TMP}})
 	if [ ${_CLIP} -eq 0 ]; then
 		[ -z ${_HIGHLIGHT} ] || tput smso && echo "${_e}" && \
 			tput rmso || echo "${_e}"
@@ -229,7 +241,7 @@ check_get_keys()
 
 trap 'trap_handler' EXIT HUP INT TERM
 
-while getopts C:S:P:bcdhmp:s: arg; do
+while getopts C:S:P:bcdhkmp:s: arg; do
 	case ${arg} in
 		C) _CBOARD="${OPTARG}" ;;
 		c) _CLIP=1 ;;
@@ -241,6 +253,7 @@ while getopts C:S:P:bcdhmp:s: arg; do
 		m) _ML=1 ;;
 		b) _BATCH=1 ;;
 		h) _HIGHLIGHT=1 ;;
+		k) command -v secret-tool >/dev/null && _KEYRING=1 ;;
 		*) usage ;;
 	esac
 done

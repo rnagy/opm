@@ -22,7 +22,7 @@
 .Nd whatever password manager
 .Sh SYNOPSIS
 .Nm opm
-.Op Fl bcdhm
+.Op Fl bcdhkm
 .Op Fl C clipboard
 .Op Fl S file
 .Op Fl P file
@@ -47,6 +47,10 @@ Copy the password to the clipboard for one time paste only.
 Turn on debug messages.
 .It Fl h
 Highlight the output on the console.
+.It Fl k
+Use
+.Xr secret-tool 1
+to query the gnome-keyring for the store password.
 .It Fl m
 The content is multi-line.
 This option forces the use of the $EDITOR for adding
