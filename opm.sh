@@ -110,7 +110,7 @@ tree()
 				return
 	while read _e; do
 		_e=${_e##./}
-		[ -f ${OPM_STORE}/${_e} ] && print "${_e}"
+		[ -f ${OPM_STORE}/${_e}.sig ] && print "${_e}"
 	done
 }
 
@@ -176,7 +176,7 @@ add_entry()
 		[ -z "${_pw}" -o -z "${_rpw}" ] && opm_err "Empty password"
 		[ "${_pw}" != "${_rpw}" ] && opm_err "Password mismatch"
 		printf '%s' "${_pw}" > ${_TMP}
-	fi	
+	fi
 	do_encrypt ${_path}
 }
 
