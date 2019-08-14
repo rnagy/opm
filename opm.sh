@@ -109,8 +109,7 @@ tree()
 			print "|-- "$NF}' FS='/' && \
 				return
 	while read _e; do
-		_e=${_e##./}
-		[ -f ${OPM_STORE}/${_e}.sig ] && print "${_e}"
+		print "${_e##./}"
 	done
 }
 
