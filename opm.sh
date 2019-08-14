@@ -117,16 +117,18 @@ tree()
 show_list()
 {
 	for _f in $(cd ${OPM_STORE} && find . -name '*.sig' 2>/dev/null); do
-		_d=$(dirname $_f})
-		until [[ ${_d} == '.' ]]; do
-			_p="${_d} ${_p}"
-			_d=$(dirname ${_d})
-		done
-		for _pe in ${_p}; do
-			[[ " ${_pd[*]} " == *" $_pe "* ]] || \
-				echo ${_pe} | tree && \
-					_pd="${_pd} ${_pe}"
-		done
+		if [ -z ${_BATCH} ]; then
+			_d=${_f%/*}
+			until [[ ${_d} == '.' ]]; do
+				_p="${_d} ${_p}"
+				_d=${_d%/*}
+			done
+			for _pe in ${_p}; do
+				[[ " ${_pd[*]} " == *" $_pe "* ]] || \
+					echo ${_pe} | tree && \
+						_pd="${_pd} ${_pe}"
+			done
+		fi
 		echo ${_f} | sed "s,.sig$,,g" | tree
 	done
 }
