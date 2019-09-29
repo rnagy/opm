@@ -222,8 +222,9 @@ show_entry()
 		[ -z ${_HIGHLIGHT} ] || tput smso && echo "${_e}" && \
 			tput rmso || echo "${_e}"
 	else
+		[[ ${_e} == *\n* ]] && _ML=1
 		opm_debug "Copying to clipboard=${_CBOARD}, multiline=${_ML}"
-		[ ${_ML} -eq 0 ] && _e=$(echo "${_e}" | head -1)
+		[ ${_ML} -gt 0 ] && _e=$(echo "${_e}" | sed -n '2p')
 		printf '%s' "${_e}" | xclip -selection ${_CBOARD} -loop 1
 	fi
 }
