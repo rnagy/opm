@@ -115,7 +115,7 @@ tree()
 
 show_list()
 {
-	for _f in $(cd ${OPM_STORE} && find . -name '*.sig' 2>/dev/null); do
+	for _f in $(cd ${OPM_STORE} && find . -name '*.sig' 2>/dev/null | sort); do
 		if [ -z ${_BATCH} ]; then
 			_d=${_f%/*}
 			until [[ ${_d} == '.' ]]; do
