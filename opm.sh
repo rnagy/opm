@@ -222,10 +222,10 @@ show_entry()
 		[ -z ${_HIGHLIGHT} ] || tput smso && echo "${_e}" && \
 			tput rmso || echo "${_e}"
 	else
-		[[ ${_e} == *\n* ]] && _ML=1
+		[[ ${_e} == *"\n"* ]] && _ML=1
 		opm_debug "Copying to clipboard=${_CBOARD}, multiline=${_ML}"
 		[ ${_ML} -gt 0 ] && _e=$(echo "${_e}" | sed -n '2p')
-		printf '%s' "${_e}" | xclip -selection ${_CBOARD} -loop 1
+		printf "%s" "${_e}" | xclip -selection ${_CBOARD} -loop 1
 	fi
 }
 
@@ -245,7 +245,7 @@ trap 'trap_handler' EXIT HUP INT TERM
 
 while getopts C:S:P:bcdhkmp:s: arg; do
 	case ${arg} in
-		C) _CBOARD="${OPTARG}" ;;
+		C) _CBOARD="${OPTARG}" && _CLIP=1 ;;
 		c) _CLIP=1 ;;
 		S) _SPRIVATE_KEY="${OPTARG}" ;;
 		s) _PRIVATE_KEY="${OPTARG}" ;;
