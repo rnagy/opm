@@ -245,7 +245,7 @@ trap 'trap_handler' EXIT HUP INT TERM
 
 while getopts C:S:P:bcdhkmp:s: arg; do
 	case ${arg} in
-		C) _CBOARD="${OPTARG}" && _CLIP=1 ;;
+		C) _CBOARD="${OPTARG}" ;;
 		c) _CLIP=1 ;;
 		S) _SPRIVATE_KEY="${OPTARG}" ;;
 		s) _PRIVATE_KEY="${OPTARG}" ;;
