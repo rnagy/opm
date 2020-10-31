@@ -42,7 +42,9 @@ The options are as follows:
 .It Fl b
 Enable batch mode for listing the entries, avoiding the tree output.
 .It Fl c
-Copy the password to the clipboard for one time paste only.
+Use 
+.Xr xclip 1
+to copy the password to the clipboard for one time paste only.
 .It Fl d
 Turn on debug messages.
 .It Fl h
@@ -59,6 +61,9 @@ entries.
 Specifies which clipboard to use.
 Defaults to
 .Pa primary .
+This option also sets the
+.It Fl c
+argument .
 .It Fl S Ar file
 Path to the signify private key.
 .It Fl P Ar file
@@ -79,7 +84,7 @@ Remove the specified entry.
 Show the list of existing entries.
 .It Cm encrypt Ar group/entry
 Re-encrypt the specified path.
-If not path is specified, all entries will be re-encrypted.
+If no path is specified, all entries will be re-encrypted.
 .It Cm show | get Ar group/entry
 Show the contents of an entry after decryption.
 .It Cm verify
