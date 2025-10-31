@@ -22,6 +22,7 @@ OPM_KEYSTORE=${OPM_KEYSTORE:-${HOME}/.opm/private}
 _CBOARD=primary
 _CLIP=0
 _ML=0
+_OTP=0
 _KEYRING=0
 
 [ -d ${OPM_STORE} ] || mkdir -p ${OPM_STORE}
@@ -218,6 +219,9 @@ show_entry()
 	signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_path} && \
 	_e=$(openssl smime -decrypt -in ${OPM_STORE}/${_path} -inform PEM \
 		-inkey ${_PRIVATE_KEY} ${_pw:+-passin file:${_TMP}})
+	if [ ${_OTP} -eq 1 ]; then
+		_e=$(oathtool -b --totp "${_e}")
+	fi
 	if [ ${_CLIP} -eq 0 ]; then
 		[ -z ${_HIGHLIGHT} ] || tput smso && echo "${_e}" && \
 			tput rmso || echo "${_e}"
@@ -243,7 +247,7 @@ check_get_keys()
 
 trap 'trap_handler' EXIT HUP INT TERM
 
-while getopts C:S:P:bcdhkmp:s: arg; do
+while getopts C:S:P:bcdhkmop:s: arg; do
 	case ${arg} in
 		C) _CBOARD="${OPTARG}" && _CLIP=1 ;;
 		c) _CLIP=1 ;;
@@ -253,6 +257,7 @@ while getopts C:S:P:bcdhkmp:s: arg; do
 		p) _PUBLIC_KEY="${OPTARG}" ;;
 		d) _DEBUG=1 ;;
 		m) _ML=1 ;;
+		o) _OTP=1 ;;
 		b) _BATCH=1 ;;
 		h) _HIGHLIGHT=1 ;;
 		k) command -v secret-tool >/dev/null && _KEYRING=1 ;;
