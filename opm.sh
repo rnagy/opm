@@ -220,7 +220,7 @@ show_entry()
 	_e=$(openssl smime -decrypt -in ${OPM_STORE}/${_path} -inform PEM \
 		-inkey ${_PRIVATE_KEY} ${_pw:+-passin file:${_TMP}})
 	if [ ${_OTP} -eq 1 ]; then
-		_e=$(oathtool -b --totp "${_e}")
+		_e=$(oathtool -b -w 2 --totp "${_e}")
 	fi
 	if [ ${_CLIP} -eq 0 ]; then
 		[ -z ${_HIGHLIGHT} ] || tput smso && echo "${_e}" && \
