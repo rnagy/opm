@@ -22,7 +22,7 @@
 .Nd whatever password manager
 .Sh SYNOPSIS
 .Nm opm
-.Op Fl bcdhkm
+.Op Fl bcdhkmo
 .Op Fl C clipboard
 .Op Fl S file
 .Op Fl P file
@@ -57,6 +57,10 @@ to query the gnome-keyring for the store password.
 The content is multi-line.
 This option forces the use of the $EDITOR for adding
 entries.
+.It Fl o
+The content is a base32 encoded key to be passed to
+.Xr oathtool 1
+to generate OATH one-time passwords.
 .It Fl C Ar clipboard
 Specifies which clipboard to use.
 Defaults to
