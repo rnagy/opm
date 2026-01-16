@@ -165,6 +165,7 @@ add_entry()
 
 	if [ ${_ML} -gt 0 ]; then
 		${EDITOR:-vi} ${_TMP}
+		[[ -s ${_TMP} ]] || opm_err "Empty multiline content"
 	else
 		if [ -t 0 ]; then
 			stty -echo
