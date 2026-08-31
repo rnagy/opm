@@ -224,8 +224,7 @@ show_entry()
 		_e=$(oathtool -b -w 2 --totp "${_e}")
 	fi
 	if [ ${_CLIP} -eq 0 ]; then
-		[ -z ${_HIGHLIGHT} ] || tput smso && echo "${_e}" && \
-			tput rmso || echo "${_e}"
+		echo "${_BOLD}${_e}${_OBOLD}"
 	else
 		_m=$(echo "${_e}" | sed -n '2p')
 		[ -z "${_m}" ] || _e=${_m}
@@ -260,7 +259,7 @@ while getopts C:S:P:bcdhkmop:s: arg; do
 		m) _ML=1 ;;
 		o) _OTP=1 ;;
 		b) _BATCH=1 ;;
-		h) _HIGHLIGHT=1 ;;
+		h) _BOLD=$(tput smso); _OBOLD=$(tput rmso) ;;
 		k) command -v secret-tool >/dev/null && _KEYRING=1 ;;
 		*) usage ;;
 	esac
