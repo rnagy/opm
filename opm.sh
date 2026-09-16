@@ -196,7 +196,7 @@ del_entry()
 	[ -f ${OPM_STORE}/${_path} ] || opm_err "Non-existent entry"
 	rm -i ${OPM_STORE}/${_path}
 	[ -e ${OPM_STORE}/${_path} ] || \
-		echo rm -f ${OPM_STORE}/${_path}.sig
+		rm -f ${OPM_STORE}/${_path}.sig
 }
 
 show_entry()
