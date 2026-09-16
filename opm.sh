@@ -105,32 +105,27 @@ encrypt()
 
 tree()
 {
-	[ -z ${_BATCH} ] && \
-		awk '!/\.$/ {for (i=1;i<NF-1;i++){printf("|   ")} \
-			print "|-- "$NF}' FS='/' && \
-				return
-	while read _e; do
-		print "${_e##./}"
-	done
+	if [ -n "${_BATCH}" ]; then
+		sed 's,^\./,,'
+		return
+	fi
+	awk -F/ '{
+		d = 2
+		while (d < NF && $d == prev[d]) d++
+		for (i = d; i < NF; i++) {
+			for (j = 1; j < i - 1; j++) printf "|   "
+			print "|-- " $i
+			prev[i] = $i
+		}
+		for (j = 1; j < NF - 1; j++) printf "|   "
+		print "|-- " $NF
+	}'
 }
 
 show_list()
 {
-	for _f in $(cd ${OPM_STORE} && find . -name '*.sig' 2>/dev/null | sort); do
-		if [ -z ${_BATCH} ]; then
-			_d=${_f%/*}
-			until [[ ${_d} == '.' ]]; do
-				_p="${_d} ${_p}"
-				_d=${_d%/*}
-			done
-			for _pe in ${_p}; do
-				[[ " ${_pd[*]} " == *" $_pe "* ]] || \
-					echo ${_pe} | tree && \
-						_pd="${_pd} ${_pe}"
-			done
-		fi
-		echo ${_f} | sed "s,.sig$,,g" | tree
-	done
+	(cd ${OPM_STORE} && find . -name '*.sig' 2>/dev/null | sort) | \
+		sed "s,.sig$,,g" | tree
 }
 
 do_encrypt()
