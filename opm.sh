@@ -217,7 +217,8 @@ show_entry()
 			make_temp && echo ${_pw} > ${_TMP}
 		fi
 	fi
-	signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_path} && \
+	signify -Vq -p ${_SPUBLIC_KEY} -m ${OPM_STORE}/${_path} || \
+		opm_err "unable to verify ${_e}"
 	_e=$(openssl smime -decrypt -in ${OPM_STORE}/${_path} -inform PEM \
 		-inkey ${_PRIVATE_KEY} ${_pw:+-passin file:${_TMP}})
 	if [ ${_OTP} -eq 1 ]; then
